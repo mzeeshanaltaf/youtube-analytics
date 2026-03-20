@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { ContactDialog } from "./ContactDialog";
 
 export function Footer() {
@@ -15,11 +16,13 @@ export function Footer() {
             {/* Brand */}
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 rounded-lg bg-accent flex items-center justify-center">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="white">
-                    <polygon points="10,8 16,12 10,16" />
-                  </svg>
-                </div>
+                <Image
+                  src="/yt-analytics-icon.png"
+                  alt="YT Analytics"
+                  width={28}
+                  height={28}
+                  className="rounded-lg"
+                />
                 <span className="font-heading text-base font-bold tracking-tight">
                   YT Analytics
                 </span>

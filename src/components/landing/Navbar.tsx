@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Button } from "@/components/ui/Button";
 
@@ -27,11 +28,13 @@ export function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <a href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-              <polygon points="10,8 16,12 10,16" />
-            </svg>
-          </div>
+          <Image
+            src="/yt-analytics-icon.png"
+            alt="YT Analytics"
+            width={32}
+            height={32}
+            className="rounded-lg"
+          />
           <span className="font-heading text-lg font-bold tracking-tight">
             YT Analytics
           </span>

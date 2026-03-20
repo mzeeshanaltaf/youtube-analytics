@@ -1,5 +1,7 @@
 # YT Analytics
 
+**Live Demo: [https://yt-analytics.zeeshanai.cloud](https://yt-analytics.zeeshanai.cloud)**
+
 A YouTube channel analytics tracker built with Next.js. No login or signup required — just enter your email and a YouTube channel URL to start tracking subscriber growth, daily views, and video performance metrics.
 
 ## Features
@@ -65,8 +67,8 @@ src/
 ### Installation
 
 ```bash
-git clone https://github.com/your-username/yt-analytics.git
-cd yt-analytics
+git clone https://github.com/mzeeshanaltaf/youtube-analytics.git
+cd youtube-analytics/yt-analytics
 npm install
 ```
 
@@ -115,9 +117,9 @@ npm start
 
 ## Deployment
 
-Deploy to [Vercel](https://vercel.com) with one click. Set the `N8N_API_KEY` environment variable in your Vercel project settings.
+The app is live at **[https://yt-analytics.zeeshanai.cloud](https://yt-analytics.zeeshanai.cloud)**.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
+To deploy your own instance, set the `N8N_API_KEY` environment variable on your hosting platform of choice (Vercel, Railway, etc.).
 
 ## License
 

@@ -15,6 +15,14 @@ interface FormErrors {
   name?: string;
   email?: string;
   message?: string;
+  captcha?: string;
+}
+
+function generateCaptcha(): { a: number; b: number } {
+  return {
+    a: Math.floor(Math.random() * 20) + 1,
+    b: Math.floor(Math.random() * 20) + 1,
+  };
 }
 
 function validate(name: string, email: string, message: string): FormErrors {
@@ -46,6 +54,8 @@ export function ContactDialog({ open, onClose }: ContactDialogProps) {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
+  const [captchaAnswer, setCaptchaAnswer] = useState("");
+  const [captcha, setCaptcha] = useState(generateCaptcha);
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -57,6 +67,8 @@ export function ContactDialog({ open, onClose }: ContactDialogProps) {
       setName("");
       setEmail("");
       setMessage("");
+      setCaptchaAnswer("");
+      setCaptcha(generateCaptcha());
       setErrors({});
       setSubmitted(false);
       setSubmitError("");
@@ -83,6 +95,11 @@ export function ContactDialog({ open, onClose }: ContactDialogProps) {
     setSubmitError("");
 
     const validationErrors = validate(name, email, message);
+    if (!captchaAnswer.trim()) {
+      validationErrors.captcha = "Please solve the math problem.";
+    } else if (parseInt(captchaAnswer.trim(), 10) !== captcha.a + captcha.b) {
+      validationErrors.captcha = "Incorrect answer. Please try again.";
+    }
     setErrors(validationErrors);
     if (Object.keys(validationErrors).length > 0) return;
 
@@ -227,6 +244,37 @@ export function ContactDialog({ open, onClose }: ContactDialogProps) {
                         {message.length}/1000
                       </span>
                     </div>
+                  </div>
+
+                  {/* Math Captcha */}
+                  <div className="flex flex-col gap-1.5">
+                    <label htmlFor="contact-captcha" className="text-sm font-medium text-muted">
+                      What is {captcha.a} + {captcha.b}?
+                    </label>
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-surface border border-border font-mono text-sm font-semibold whitespace-nowrap">
+                        {captcha.a} + {captcha.b} =
+                      </div>
+                      <input
+                        id="contact-captcha"
+                        type="text"
+                        inputMode="numeric"
+                        placeholder="?"
+                        value={captchaAnswer}
+                        onChange={(e) => {
+                          setCaptchaAnswer(e.target.value);
+                          if (errors.captcha) setErrors((prev) => ({ ...prev, captcha: undefined }));
+                        }}
+                        className={`w-24 rounded-lg bg-surface-elevated border border-border px-4 py-2.5
+                          text-foreground font-mono text-center placeholder:text-muted/50
+                          focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30
+                          transition-colors duration-200
+                          ${errors.captcha ? "border-red-500 focus:border-red-500 focus:ring-red-500/30" : ""}`}
+                      />
+                    </div>
+                    {errors.captcha && (
+                      <p className="text-xs text-red-500">{errors.captcha}</p>
+                    )}
                   </div>
 
                   {submitError && (

@@ -49,7 +49,7 @@ export function Footer() {
                     onClick={() => setContactOpen(true)}
                     className="text-sm text-muted hover:text-foreground transition-colors cursor-pointer"
                   >
-                    Contact
+                    Contact Us
                   </button>
                 </li>
               </ul>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { getChannelDetails } from "@/lib/api";
@@ -18,6 +18,10 @@ export function AddChannelForm({
 }: AddChannelFormProps) {
   const [email, setEmail] = useState(currentEmail);
   const [channelUrl, setChannelUrl] = useState("");
+
+  useEffect(() => {
+    if (currentEmail) setEmail(currentEmail);
+  }, [currentEmail]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 

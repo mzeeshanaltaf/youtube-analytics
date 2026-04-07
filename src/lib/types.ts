@@ -54,7 +54,9 @@ export type WebhookEvent =
   | "yt_channel_analytics"
   | "yt_channel_video_analytics"
   | "delete_user_channel"
-  | "contact_form";
+  | "contact_form"
+  | "send_otp"
+  | "verify_otp";
 
 export interface ContactFormData {
   name: string;

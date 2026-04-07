@@ -77,6 +77,27 @@ export async function deleteChannel(
   });
 }
 
+export async function sendOtp(
+  userEmail: string
+): Promise<{ success: boolean; message?: string }> {
+  return callWebhook<{ success: boolean; message?: string }>({
+    event_type: "send_otp",
+    user_email: userEmail,
+  });
+}
+
+export async function verifyOtp(
+  userEmail: string,
+  otp: string
+): Promise<{ success: boolean; message?: string }> {
+  const res = await callWebhook<[{ result: { success: boolean; message?: string } }]>({
+    event_type: "verify_otp",
+    user_email: userEmail,
+    otp,
+  });
+  return res[0].result;
+}
+
 export async function submitContactForm(
   data: ContactFormData
 ): Promise<ContactResponse> {

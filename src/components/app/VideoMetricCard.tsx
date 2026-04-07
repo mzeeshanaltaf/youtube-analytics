@@ -62,14 +62,22 @@ export function VideoMetricCard({ metric }: VideoMetricCardProps) {
       )}
 
       {/* Video thumbnail */}
-      <div className="relative aspect-video rounded-lg overflow-hidden mb-3">
-        <Image
-          src={metric.video_thumbnail}
-          alt={metric.video_title}
-          fill
-          className="object-cover group-hover:scale-105 transition-transform duration-300"
-          sizes="(max-width: 768px) 100vw, 50vw"
-        />
+      <div className="relative aspect-video rounded-lg overflow-hidden mb-3 bg-surface-elevated">
+        {metric.video_thumbnail ? (
+          <Image
+            src={metric.video_thumbnail}
+            alt={metric.video_title}
+            fill
+            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            sizes="(max-width: 768px) 100vw, 50vw"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-muted">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3" />
+            </svg>
+          </div>
+        )}
         {/* Duration badge */}
         <div className="absolute bottom-2 right-2 bg-black/80 text-white text-xs font-mono px-1.5 py-0.5 rounded">
           {parseDuration(metric.video_duration)}

@@ -17,18 +17,23 @@ export function VideoMetricsGrid({
 }: VideoMetricsGridProps) {
   if (isLoading) {
     return (
-      <div>
-        <h3 className="font-heading text-xl font-semibold mb-4">Video Highlights</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="rounded-xl bg-surface border border-border p-4">
-              <Skeleton className="h-5 w-24 mb-3" />
-              <Skeleton className="aspect-video w-full mb-3" />
-              <Skeleton className="h-4 w-3/4 mb-2" />
-              <Skeleton className="h-6 w-1/3" />
+      <div className="space-y-8">
+        <h3 className="font-heading text-xl font-semibold">Video Highlights</h3>
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div key={i}>
+            <Skeleton className="h-4 w-32 mb-3" />
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {Array.from({ length: 3 }).map((_, j) => (
+                <div key={j} className="rounded-xl bg-surface border border-border p-4">
+                  <Skeleton className="h-7 w-7 rounded-full mb-3" />
+                  <Skeleton className="aspect-video w-full mb-3" />
+                  <Skeleton className="h-4 w-3/4 mb-2" />
+                  <Skeleton className="h-6 w-1/3" />
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
     );
   }
@@ -49,14 +54,47 @@ export function VideoMetricsGrid({
     );
   }
 
+  type MetricType = "highest_views" | "highest_likes" | "highest_comments" | "longest_duration";
+
+  const metricOrder: MetricType[] = [
+    "highest_views",
+    "highest_likes",
+    "highest_comments",
+    "longest_duration",
+  ];
+
+  const metricLabels: Record<MetricType, string> = {
+    highest_views: "Most Viewed",
+    highest_likes: "Most Liked",
+    highest_comments: "Most Commented",
+    longest_duration: "Longest Videos",
+  };
+
+  const grouped = metricOrder
+    .map((type) => ({
+      type,
+      label: metricLabels[type],
+      videos: channelData.metrics
+        .filter((m) => m.metric === type)
+        .sort((a, b) => (a.rank ?? 99) - (b.rank ?? 99)),
+    }))
+    .filter((g) => g.videos.length > 0);
+
   return (
-    <div>
-      <h3 className="font-heading text-xl font-semibold mb-4">Video Highlights</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {channelData.metrics.map((metric) => (
-          <VideoMetricCard key={metric.metric} metric={metric} />
-        ))}
-      </div>
+    <div className="space-y-8">
+      <h3 className="font-heading text-xl font-semibold">Video Highlights</h3>
+      {grouped.map(({ type, label, videos }) => (
+        <div key={type}>
+          <h4 className="text-sm font-semibold text-muted uppercase tracking-wider mb-3">
+            {label}
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {videos.map((metric) => (
+              <VideoMetricCard key={`${metric.metric}-${metric.rank}`} metric={metric} />
+            ))}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }

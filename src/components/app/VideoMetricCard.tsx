@@ -49,12 +49,17 @@ export function VideoMetricCard({ metric }: VideoMetricCardProps) {
       className="group rounded-xl bg-surface border border-border p-4
         hover:border-border-hover hover:shadow-lg transition-all duration-300 block"
     >
-      {/* Metric badge */}
-      <div
-        className={`inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium mb-3 ${config.bgColor} ${config.color}`}
-      >
-        {config.label}
-      </div>
+      {/* Rank badge */}
+      {metric.rank != null && (
+        <div className="flex items-center gap-2 mb-3">
+          <div
+            className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold font-mono
+              ${metric.rank === 1 ? "bg-yellow-500/20 text-yellow-400" : metric.rank === 2 ? "bg-zinc-400/20 text-zinc-300" : "bg-amber-700/20 text-amber-600"}`}
+          >
+            #{metric.rank}
+          </div>
+        </div>
+      )}
 
       {/* Video thumbnail */}
       <div className="relative aspect-video rounded-lg overflow-hidden mb-3">

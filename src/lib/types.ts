@@ -25,6 +25,7 @@ export interface ChannelSnapshot {
 }
 
 export interface VideoMetric {
+  rank?: number;
   metric:
     | "highest_comments"
     | "highest_likes"

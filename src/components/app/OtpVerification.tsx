@@ -126,6 +126,11 @@ export function OtpVerification({ email, onVerified, onBack }: OtpVerificationPr
         <p className="font-mono text-sm font-semibold mt-1 text-foreground break-all">
           {email}
         </p>
+        <p className="text-xs text-muted mt-3">
+          Email is sent from{" "}
+          <span className="font-mono text-foreground/70">noreply.ytanalytics@gmail.com</span>
+          {" "}— if you don&apos;t see it, check your spam folder before resending.
+        </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4">

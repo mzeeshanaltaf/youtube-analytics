@@ -19,7 +19,7 @@ export function VideoMetricsGrid({
     return (
       <div className="space-y-8">
         <h3 className="font-heading text-xl font-semibold">Video Highlights</h3>
-        {Array.from({ length: 4 }).map((_, i) => (
+        {Array.from({ length: 5 }).map((_, i) => (
           <div key={i}>
             <Skeleton className="h-4 w-32 mb-3" />
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -54,13 +54,14 @@ export function VideoMetricsGrid({
     );
   }
 
-  type MetricType = "highest_views" | "highest_likes" | "highest_comments" | "longest_duration";
+  type MetricType = "highest_views" | "highest_likes" | "highest_comments" | "longest_duration" | "most_recent";
 
   const metricOrder: MetricType[] = [
     "highest_views",
     "highest_likes",
     "highest_comments",
     "longest_duration",
+    "most_recent",
   ];
 
   const metricLabels: Record<MetricType, string> = {
@@ -68,6 +69,7 @@ export function VideoMetricsGrid({
     highest_likes: "Most Liked",
     highest_comments: "Most Commented",
     longest_duration: "Longest Videos",
+    most_recent: "Most Recent",
   };
 
   const grouped = metricOrder

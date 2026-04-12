@@ -30,7 +30,8 @@ export interface VideoMetric {
     | "highest_comments"
     | "highest_likes"
     | "highest_views"
-    | "longest_duration";
+    | "longest_duration"
+    | "most_recent";
   video_id: string;
   video_title: string;
   video_duration: string;

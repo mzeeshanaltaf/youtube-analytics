@@ -36,6 +36,12 @@ const metricConfig: Record<
     bgColor: "bg-chart-4/10",
     getValue: (m) => parseDuration(m.video_duration),
   },
+  most_recent: {
+    label: "Most Recent",
+    color: "text-chart-5",
+    bgColor: "bg-chart-5/10",
+    getValue: (m) => formatDate(m.video_published_at),
+  },
 };
 
 export function VideoMetricCard({ metric }: VideoMetricCardProps) {

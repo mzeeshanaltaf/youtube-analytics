@@ -1,13 +1,14 @@
 "use client";
 
-import { useSearchParams, useParams } from "next/navigation";
-import { Suspense } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { Suspense, useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useChannelAnalytics } from "@/lib/hooks/useChannelAnalytics";
 import { useVideoAnalytics } from "@/lib/hooks/useVideoAnalytics";
 import { ChannelHeader } from "@/components/app/ChannelHeader";
 import { VideoMetricsGrid } from "@/components/app/VideoMetricsGrid";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { getSession } from "@/lib/session";
 
 const AnalyticsCharts = dynamic(
   () =>
@@ -33,9 +34,22 @@ const AnalyticsCharts = dynamic(
 
 function ChannelDetailContent() {
   const params = useParams();
-  const searchParams = useSearchParams();
+  const router = useRouter();
   const channelId = params.id as string;
-  const email = searchParams.get("email") || "";
+
+  const [email, setEmail] = useState("");
+  const [sessionChecked, setSessionChecked] = useState(false);
+
+  useEffect(() => {
+    const session = getSession();
+    if (session) {
+      setEmail(session.email);
+    } else {
+      router.replace("/app");
+    }
+    setSessionChecked(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const { data: analytics, isLoading: analyticsLoading } =
     useChannelAnalytics(channelId);
@@ -43,6 +57,8 @@ function ChannelDetailContent() {
     useVideoAnalytics(email || null);
 
   const channelTitle = analytics?.[0]?.channel_title || "";
+
+  if (!sessionChecked) return null;
 
   return (
     <div className="space-y-8">

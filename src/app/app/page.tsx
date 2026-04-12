@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { Suspense, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { AddChannelForm } from "@/components/app/AddChannelForm";
 import { OtpVerification } from "@/components/app/OtpVerification";
 import { ChannelCardGrid } from "@/components/app/ChannelCardGrid";
@@ -9,6 +9,7 @@ import { useChannels } from "@/lib/hooks/useChannels";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { sendOtp, getChannelDetails } from "@/lib/api";
+import { saveSession, getSession } from "@/lib/session";
 
 interface OtpState {
   email: string;
@@ -19,8 +20,31 @@ interface OtpState {
 function DashboardContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const email = searchParams.get("email") || "";
-  const { data: channels, isLoading, mutate } = useChannels(email || null);
+  const urlEmail = searchParams.get("email") || "";
+
+  const [verifiedEmail, setVerifiedEmail] = useState("");
+  const [sessionChecked, setSessionChecked] = useState(false);
+
+  useEffect(() => {
+    const session = getSession();
+    if (session && session.email === urlEmail) {
+      // URL email matches the verified session — trusted
+      setVerifiedEmail(session.email);
+    } else if (session && !urlEmail) {
+      // Valid session but no email in URL (e.g. direct /app visit) — restore URL
+      router.replace(`/app?email=${encodeURIComponent(session.email)}`);
+      setVerifiedEmail(session.email);
+    } else {
+      // No session, or URL email doesn't match session → strip email, force OTP
+      if (urlEmail) router.replace("/app");
+      setVerifiedEmail("");
+    }
+    setSessionChecked(true);
+  // urlEmail is the only external value used; router is stable
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [urlEmail]);
+
+  const { data: channels, isLoading, mutate } = useChannels(verifiedEmail || null);
 
   const [lookupEmail, setLookupEmail] = useState("");
   const [lookupError, setLookupError] = useState("");
@@ -29,6 +53,7 @@ function DashboardContent() {
   const [sendingOtp, setSendingOtp] = useState(false);
 
   const handleSuccess = (newEmail: string) => {
+    saveSession(newEmail);
     router.push(`/app?email=${encodeURIComponent(newEmail)}`);
     mutate();
   };
@@ -78,6 +103,7 @@ function DashboardContent() {
   // Called after OTP verified successfully
   const handleOtpVerified = async () => {
     if (!otpState) return;
+    saveSession(otpState.email);
     if (otpState.action === "track" && otpState.channelUrl) {
       try {
         await getChannelDetails(otpState.channelUrl, otpState.email);
@@ -91,28 +117,30 @@ function DashboardContent() {
     setOtpState(null);
   };
 
+  if (!sessionChecked) return null;
+
   return (
     <div className="space-y-10">
       {/* Header */}
       <div>
         <h1 className="font-heading text-3xl font-bold tracking-tight">
-          {email ? "Your Channels" : "Get Started"}
+          {verifiedEmail ? "Your Channels" : "Get Started"}
         </h1>
-        {email && (
+        {verifiedEmail && (
           <p className="text-muted text-sm mt-1">
-            Tracking channels for <span className="font-mono text-foreground">{email}</span>
+            Tracking channels for <span className="font-mono text-foreground">{verifiedEmail}</span>
           </p>
         )}
       </div>
 
       {/* OTP verification screen */}
-      {!email && otpState ? (
+      {!verifiedEmail && otpState ? (
         <OtpVerification
           email={otpState.email}
           onVerified={handleOtpVerified}
           onBack={() => setOtpState(null)}
         />
-      ) : !email ? (
+      ) : !verifiedEmail ? (
         /* Initial state: two options */
         <div className="max-w-xl mx-auto pt-8 space-y-10">
           {/* Option 1: Track a new channel */}
@@ -174,7 +202,7 @@ function DashboardContent() {
         /* Logged-in state: compact add-channel form */
         <div className="rounded-xl bg-surface border border-border p-5">
           <AddChannelForm
-            currentEmail={email}
+            currentEmail={verifiedEmail}
             onSuccess={handleSuccess}
             compact
           />
@@ -182,11 +210,11 @@ function DashboardContent() {
       )}
 
       {/* Channel grid */}
-      {email && (
+      {verifiedEmail && (
         <ChannelCardGrid
           channels={channels}
           isLoading={isLoading}
-          email={email}
+          email={verifiedEmail}
           onChannelDeleted={() => mutate()}
         />
       )}

@@ -8,18 +8,13 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
-  // Load Space Grotesk Bold from Google Fonts
-  let fontData: ArrayBuffer | null = null;
-  try {
-    const css = await fetch(
-      "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap",
-      { headers: { "User-Agent": "Mozilla/5.0 (compatible; Googlebot/2.1)" } }
-    ).then((r) => r.text());
-    const woff2Url = css.match(/src: url\(([^)]+)\) format\('woff2'\)/)?.[1] ?? "";
-    if (woff2Url) fontData = await fetch(woff2Url).then((r) => r.arrayBuffer());
-  } catch {
-    // fall back to system sans-serif if font fetch fails
-  }
+  // Load Space Grotesk Bold from locally bundled @fontsource package — no network needed
+  const fontData = readFileSync(
+    join(
+      process.cwd(),
+      "node_modules/@fontsource/space-grotesk/files/space-grotesk-latin-700-normal.woff2"
+    )
+  );
 
   // Embed the app icon as a base64 data URL (fs is available in nodejs runtime)
   const iconBytes = readFileSync(join(process.cwd(), "public", "yt-analytics-icon.png"));
@@ -178,16 +173,14 @@ export default async function Image() {
     ),
     {
       ...size,
-      fonts: fontData
-        ? [
-            {
-              name: "Space Grotesk",
-              data: fontData,
-              style: "normal",
-              weight: 700,
-            },
-          ]
-        : [],
+      fonts: [
+        {
+          name: "Space Grotesk",
+          data: fontData,
+          style: "normal",
+          weight: 700,
+        },
+      ],
     }
   );
 }

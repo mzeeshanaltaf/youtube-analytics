@@ -1,21 +1,24 @@
 import { ImageResponse } from "next/og";
-import { readFileSync } from "fs";
-import { join } from "path";
 
-export const runtime = "nodejs";
+// Edge runtime + import.meta.url is the Next.js-recommended pattern for OG images.
+// The bundler statically bundles the referenced files — no fs, no network needed.
+export const runtime = "edge";
 export const alt = "YT Analytics — Your YouTube Growth, Visualized";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
-  // Load static Space Grotesk Bold TTF — Satori requires static TTF, not variable or woff2
-  const fontData = readFileSync(
-    join(process.cwd(), "src/app/fonts/SpaceGrotesk-Bold.ttf")
-  );
+  const [fontData, iconData] = await Promise.all([
+    fetch(new URL("./fonts/SpaceGrotesk-Bold.ttf", import.meta.url)).then(
+      (r) => r.arrayBuffer()
+    ),
+    fetch(new URL("./icon.png", import.meta.url)).then((r) =>
+      r.arrayBuffer()
+    ),
+  ]);
 
-  // Embed the app icon as a base64 data URL (fs is available in nodejs runtime)
-  const iconBytes = readFileSync(join(process.cwd(), "public", "yt-analytics-icon.png"));
-  const iconSrc = `data:image/png;base64,${iconBytes.toString("base64")}`;
+  const iconBase64 = Buffer.from(iconData).toString("base64");
+  const iconSrc = `data:image/png;base64,${iconBase64}`;
 
   return new ImageResponse(
     (
@@ -34,7 +37,7 @@ export default async function Image() {
           fontFamily: "Space Grotesk, sans-serif",
         }}
       >
-        {/* Subtle dot-grid overlay */}
+        {/* Subtle grid overlay */}
         <div
           style={{
             position: "absolute",
@@ -75,26 +78,11 @@ export default async function Image() {
 
         {/* App icon + name row */}
         <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 18,
-            marginBottom: 44,
-          }}
+          style={{ display: "flex", alignItems: "center", gap: 18, marginBottom: 44 }}
         >
-          <img
-            src={iconSrc}
-            width={60}
-            height={60}
-            style={{ borderRadius: 14 }}
-          />
+          <img src={iconSrc} width={60} height={60} style={{ borderRadius: 14 }} />
           <span
-            style={{
-              fontSize: 30,
-              fontWeight: 700,
-              color: "#e4e4e7",
-              letterSpacing: "-0.02em",
-            }}
+            style={{ fontSize: 30, fontWeight: 700, color: "#e4e4e7", letterSpacing: "-0.02em" }}
           >
             YT Analytics
           </span>
@@ -118,42 +106,34 @@ export default async function Image() {
 
         {/* Subheading */}
         <div
-          style={{
-            fontSize: 26,
-            color: "#71717a",
-            lineHeight: 1.5,
-            marginBottom: 52,
-            maxWidth: 700,
-          }}
+          style={{ fontSize: 26, color: "#71717a", lineHeight: 1.5, marginBottom: 52, maxWidth: 700 }}
         >
           Track subscribers · Analyze videos · Monitor growth trends
         </div>
 
         {/* Feature pills */}
         <div style={{ display: "flex", gap: 14 }}>
-          {["No Signup Required", "Real-Time Analytics", "Free to Use"].map(
-            (label) => (
-              <div
-                key={label}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  padding: "8px 22px",
-                  borderRadius: 999,
-                  border: "1px solid rgba(255,0,51,0.35)",
-                  background: "rgba(255,0,51,0.08)",
-                  color: "#ff6680",
-                  fontSize: 18,
-                  fontWeight: 500,
-                }}
-              >
-                {label}
-              </div>
-            )
-          )}
+          {["No Signup Required", "Real-Time Analytics", "Free to Use"].map((label) => (
+            <div
+              key={label}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                padding: "8px 22px",
+                borderRadius: 999,
+                border: "1px solid rgba(255,0,51,0.35)",
+                background: "rgba(255,0,51,0.08)",
+                color: "#ff6680",
+                fontSize: 18,
+                fontWeight: 500,
+              }}
+            >
+              {label}
+            </div>
+          ))}
         </div>
 
-        {/* Domain — bottom-right corner */}
+        {/* Domain — bottom-right */}
         <div
           style={{
             position: "absolute",
@@ -170,14 +150,7 @@ export default async function Image() {
     ),
     {
       ...size,
-      fonts: [
-        {
-          name: "Space Grotesk",
-          data: fontData,
-          style: "normal",
-          weight: 700,
-        },
-      ],
+      fonts: [{ name: "Space Grotesk", data: fontData, style: "normal", weight: 700 }],
     }
   );
 }

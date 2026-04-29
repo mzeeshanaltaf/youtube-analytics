@@ -8,9 +8,9 @@ export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
 export default async function Image() {
-  // Load Space Grotesk TTF bundled in the project — Satori requires TTF, not woff2
+  // Load static Space Grotesk Bold TTF — Satori requires static TTF, not variable or woff2
   const fontData = readFileSync(
-    join(process.cwd(), "src/app/fonts/SpaceGrotesk.ttf")
+    join(process.cwd(), "src/app/fonts/SpaceGrotesk-Bold.ttf")
   );
 
   // Embed the app icon as a base64 data URL (fs is available in nodejs runtime)

@@ -4,9 +4,28 @@ import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://yt-analytics.zeeshanai.cloud"),
   title: "YT Analytics — Your YouTube Growth, Visualized",
   description:
     "Track your YouTube channel performance with real-time analytics, subscriber trends, and video insights. No signup required.",
+  openGraph: {
+    type: "website",
+    url: "https://yt-analytics.zeeshanai.cloud",
+    title: "YT Analytics — Your YouTube Growth, Visualized",
+    description:
+      "Track your YouTube channel performance with real-time analytics, subscriber trends, and video insights. No signup required.",
+    siteName: "YT Analytics",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "YT Analytics — Your YouTube Growth, Visualized",
+    description:
+      "Track your YouTube channel performance with real-time analytics, subscriber trends, and video insights. No signup required.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

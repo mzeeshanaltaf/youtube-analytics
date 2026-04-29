@@ -9,11 +9,12 @@ A YouTube channel analytics tracker built with Next.js. No login or signup requi
 - **Channel Tracking** — Add any YouTube channel by URL and track it over time
 - **Subscriber Growth Chart** — Visualize subscriber trends with an area chart
 - **Daily View Gain Chart** — Bar chart showing daily view performance
-- **Video Highlights** — Top performing videos by views, likes, comments, and duration
+- **Video Highlights** — Top 3 videos by views, likes, comments, duration, and most recent
 - **Channel Stats** — Total subscribers, views, video count, 30-day sub gain, and average views per video
+- **Email OTP Verification** — 6-digit PIN sent to your email before accessing any data; session stored in `sessionStorage` to prevent URL-based bypass
 - **Delete Channels** — Remove a channel and its data from your dashboard
 - **Dark / Light Theme** — Full theme support via `next-themes`
-- **No Auth Required** — Email-based identity; channels are scoped to your email address
+- **SEO Optimised** — Dynamic OG image, sitemap, robots.txt, and per-page metadata
 
 ## Tech Stack
 
@@ -34,9 +35,12 @@ A YouTube channel analytics tracker built with Next.js. No login or signup requi
 src/
 ├── app/
 │   ├── page.tsx                  # Marketing landing page
+│   ├── opengraph-image.tsx       # Dynamic OG image (1200×630) via ImageResponse
+│   ├── sitemap.ts                # Auto-generated sitemap.xml
+│   ├── robots.ts                 # Auto-generated robots.txt
 │   ├── globals.css               # Tailwind + CSS custom properties (dark/light tokens)
 │   ├── app/
-│   │   ├── layout.tsx            # App shell with header
+│   │   ├── layout.tsx            # App shell with header (noindex)
 │   │   ├── page.tsx              # Dashboard (channel cards)
 │   │   └── channel/[id]/
 │   │       └── page.tsx          # Channel detail (charts + video metrics)
@@ -44,14 +48,16 @@ src/
 │       └── route.ts              # Server proxy to n8n (keeps API key server-side)
 ├── components/
 │   ├── landing/                  # Navbar, Hero, Features, HowItWorks, CTA, Footer
-│   │   └── ContactDialog.tsx     # Contact form with validation
+│   │   └── ContactDialog.tsx     # Contact form with math CAPTCHA
 │   └── app/                      # AddChannelForm, ChannelCard, ChannelCardGrid,
-│                                 # ChannelHeader, AnalyticsCharts, VideoMetricsGrid
+│                                 # ChannelHeader, AnalyticsCharts, VideoMetricsGrid,
+│                                 # OtpVerification
 ├── lib/
 │   ├── api.ts                    # Client-side API service (all calls via /api/webhook)
 │   ├── types.ts                  # TypeScript interfaces
 │   ├── constants.ts              # Webhook URL mappings
 │   ├── utils.ts                  # Number/date/duration formatters
+│   ├── session.ts                # sessionStorage-based OTP session helpers
 │   └── hooks/                   # SWR hooks: useChannels, useChannelAnalytics, useVideoAnalytics
 └── styles/
     └── fonts.ts                  # next/font/google config
@@ -111,8 +117,10 @@ npm start
 | `yt_get_channel_details` | Fetch and store channel info by URL |
 | `yt_all_channel_details` | Get all tracked channels for an email |
 | `yt_channel_analytics` | Daily snapshot history for a channel |
-| `yt_channel_video_analytics` | Video metrics (top views/likes/comments/duration) |
+| `yt_channel_video_analytics` | Top 3 videos by views, likes, comments, duration, and most recent |
 | `delete_user_channel` | Remove a channel for an email |
+| `send_otp` | Send a 6-digit PIN to the user's email |
+| `verify_otp` | Verify the PIN entered by the user |
 | `contact_form` | Submit the contact form |
 
 ## Deployment

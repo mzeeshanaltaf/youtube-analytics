@@ -1,8 +1,9 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Navbar } from "@/components/landing/Navbar";
 import { Footer } from "@/components/landing/Footer";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "About — YT Analytics",
   description: "Learn more about YT Analytics and our mission.",
 };

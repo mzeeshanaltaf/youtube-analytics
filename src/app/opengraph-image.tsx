@@ -1,24 +1,20 @@
 import { ImageResponse } from "next/og";
 
-// Edge runtime + import.meta.url is the Next.js-recommended pattern for OG images.
-// The bundler statically bundles the referenced files — no fs, no network needed.
 export const runtime = "edge";
+// force-dynamic: generate at request time so network fetches work reliably.
+// import.meta.url bundling is not stable across Turbopack versions.
+export const dynamic = "force-dynamic";
 export const alt = "YT Analytics — Your YouTube Growth, Visualized";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default async function Image() {
-  const [fontData, iconData] = await Promise.all([
-    fetch(new URL("./fonts/SpaceGrotesk-Bold.ttf", import.meta.url)).then(
-      (r) => r.arrayBuffer()
-    ),
-    fetch(new URL("./icon.png", import.meta.url)).then((r) =>
-      r.arrayBuffer()
-    ),
-  ]);
+const BASE = "https://yt-analytics.zeeshanai.cloud";
 
-  const iconBase64 = Buffer.from(iconData).toString("base64");
-  const iconSrc = `data:image/png;base64,${iconBase64}`;
+export default async function Image() {
+  // Font is a static public asset — no bundler magic needed, just a plain fetch
+  const fontData = await fetch(`${BASE}/fonts/SpaceGrotesk-Bold.ttf`).then(
+    (r) => r.arrayBuffer()
+  );
 
   return new ImageResponse(
     (
@@ -80,7 +76,13 @@ export default async function Image() {
         <div
           style={{ display: "flex", alignItems: "center", gap: 18, marginBottom: 44 }}
         >
-          <img src={iconSrc} width={60} height={60} style={{ borderRadius: 14 }} />
+          {/* Icon served from public/ — absolute URL works in ImageResponse */}
+          <img
+            src={`${BASE}/yt-analytics-icon.png`}
+            width={60}
+            height={60}
+            style={{ borderRadius: 14 }}
+          />
           <span
             style={{ fontSize: 30, fontWeight: 700, color: "#e4e4e7", letterSpacing: "-0.02em" }}
           >

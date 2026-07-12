@@ -76,9 +76,6 @@ export function Footer() {
             <p className="text-xs text-muted">
               &copy; {new Date().getFullYear()} YT Analytics. All rights reserved.
             </p>
-            <p className="text-xs text-muted">
-              Built with Next.js and n8n.
-            </p>
           </div>
         </div>
     </footer>

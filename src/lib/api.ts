@@ -2,8 +2,6 @@ import type {
   Channel,
   ChannelSnapshot,
   ChannelVideoAnalytics,
-  ContactFormData,
-  ContactResponse,
 } from "./types";
 
 async function callWebhook<T>(body: Record<string, unknown>): Promise<T> {
@@ -96,13 +94,4 @@ export async function verifyOtp(
     otp,
   });
   return res[0].result;
-}
-
-export async function submitContactForm(
-  data: ContactFormData
-): Promise<ContactResponse> {
-  return callWebhook<ContactResponse>({
-    event_type: "contact_form",
-    ...data,
-  });
 }

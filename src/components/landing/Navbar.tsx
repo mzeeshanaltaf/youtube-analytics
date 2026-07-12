@@ -3,13 +3,12 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { Button } from "@/components/ui/Button";
-import { ContactDialog } from "./ContactDialog";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
-  const [contactOpen, setContactOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -18,7 +17,6 @@ export function Navbar() {
   }, []);
 
   return (
-    <>
     <motion.nav
       initial={{ y: -20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
@@ -56,12 +54,12 @@ export function Navbar() {
           >
             How It Works
           </a>
-          <button
-            onClick={() => setContactOpen(true)}
-            className="text-sm text-muted hover:text-foreground transition-colors cursor-pointer"
+          <Link
+            href="/contact"
+            className="text-sm text-muted hover:text-foreground transition-colors"
           >
             Contact Us
-          </button>
+          </Link>
         </div>
 
         <div className="flex items-center gap-3">
@@ -72,8 +70,5 @@ export function Navbar() {
         </div>
       </div>
     </motion.nav>
-
-    <ContactDialog open={contactOpen} onClose={() => setContactOpen(false)} />
-    </>
   );
 }

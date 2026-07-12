@@ -1,16 +1,9 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ContactDialog } from "./ContactDialog";
 
 export function Footer() {
-  const [contactOpen, setContactOpen] = useState(false);
-
   return (
-    <>
-      <footer className="border-t border-border py-12 px-6">
+    <footer className="border-t border-border py-12 px-6">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-10">
             {/* Brand */}
@@ -45,12 +38,12 @@ export function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <button
-                    onClick={() => setContactOpen(true)}
-                    className="text-sm text-muted hover:text-foreground transition-colors cursor-pointer"
+                  <Link
+                    href="/contact"
+                    className="text-sm text-muted hover:text-foreground transition-colors"
                   >
                     Contact Us
-                  </button>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -88,9 +81,6 @@ export function Footer() {
             </p>
           </div>
         </div>
-      </footer>
-
-      <ContactDialog open={contactOpen} onClose={() => setContactOpen(false)} />
-    </>
+    </footer>
   );
 }

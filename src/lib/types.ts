@@ -58,15 +58,3 @@ export type WebhookEvent =
   | "contact_form"
   | "send_otp"
   | "verify_otp";
-
-export interface ContactFormData {
-  name: string;
-  email: string;
-  message: string;
-}
-
-export interface ContactResponse {
-  success: boolean;
-  status: string;
-  message: string;
-}
